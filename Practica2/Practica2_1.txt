@@ -1,0 +1,30 @@
+MODULE Module1
+        CONST robtarget pInicio:=[[480,0,330],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+
+    PROC main()
+        !Añada aquí su código
+        VAR num lado := 200;
+        VAR robTarget pAprox; !robTarget es una variable 
+        
+        pAprox := Offs (pInicio, 0, 0, 50);
+        MoveJ pAprox,v1000,z100,MyTool\WObj:=wobj0;
+        MoveL pInicio,v200,z0,MyTool\WObj:=wobj0;
+        Cuadrado pInicio, lado;
+        MoveJ pAprox,v200,z100,MyTool\WObj:=wobj0;
+        
+    ENDPROC
+    PROC Cuadrado(robTarget pIni, num lado)
+        VAR robtarget pAux;
+        
+        pAux := Offs (pIni, lado, 0, 0);
+        MoveL pAux,v200,z0,MyTool\WObj:=wobj0;
+        
+        pAux := Offs (pIni, lado, lado, 0);
+        MoveL pAux,v200,z0,MyTool\WObj:=wobj0;
+        
+        pAux := Offs (pIni, 0, lado, 0);
+        MoveL pAux,v200,z0,MyTool\WObj:=wobj0;
+        
+        MoveL pIni,v200,z0,MyTool\WObj:=wobj0;
+    ENDPROC
+ENDMODULE

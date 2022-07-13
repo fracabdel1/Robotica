@@ -1,0 +1,45 @@
+MODULE Module1
+    CONST robtarget pOrigenAprox:=[[1499.999958379,499.999981236,1249.999954428],[0.000000004,0,1,0.000000001],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pOrigen:=[[1500,500,850],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDestinoAprox:=[[1500,-500,1250],[0,0,1,0],[-1,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDestino:=[[1500,-500,850],[0,0,1,0],[-1,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+!***********************************************************
+    !
+    ! Módulo:  Module1
+    !
+    ! Descripción:
+    !   <Introduzca la descripción aquí>
+    !
+    ! Autor: franc
+    !
+    ! Versión: 1.0
+    !
+    !***********************************************************
+    
+    
+    !***********************************************************
+    !
+    ! Procedimiento Main
+    !
+    !   Este es el punto de entrada de su programa
+    !
+    !***********************************************************
+    PROC main()
+        !Añada aquí su código
+        movimiento;
+    ENDPROC
+    PROC movimiento()
+        MoveJ pOrigenAprox,v2500,z100,Ventosa\WObj:=wobj0;
+        MoveL pOrigen,v300,fine,Ventosa\WObj:=wobj0;
+        SetDO SD_ActivarVentosa, 1; !Ponemos la ventosa a 1
+        WaitDI ED_PiezaCogida, 1; !Esperamos a que PiezaCogida esté a 1, así no esperamos los dos segundos
+        !WaitTime 2;
+        MoveL pOrigenAprox,v300,z100,Ventosa\WObj:=wobj0;
+        MoveJ pDestinoAprox,v2500,z100,Ventosa\WObj:=wobj0;
+        MoveL pDestino,v300,fine,Ventosa\WObj:=wobj0;
+        SetDO SD_ActivarVentosa, 0; !Ponemos la ventosa a 0, soltamos
+        WaitDI ED_PiezaCogida, 0; !Esperamos a que PiezaCogida esté a 0, así no esperamos los dos segundos
+        !WaitTime 2;
+        MoveL pDestinoAprox,v300,z100,Ventosa\WObj:=wobj0;
+    ENDPROC
+ENDMODULE

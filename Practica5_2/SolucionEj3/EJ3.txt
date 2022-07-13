@@ -1,0 +1,72 @@
+MODULE Module1
+	CONST robtarget pReposo:=[[1808.910161514,0,1855],[0.5,0,0.866025404,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+	CONST robtarget pBaseTorre1:=[[1500,500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pBaseTorre2:=[[1500,-500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pBaseDestino:=[[1500,-500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pBaseInterm:=[[1500,0,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pBaseOrigen:=[[1500,500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   
+    CONST num altura := 100;
+    CONST num nPiezasTotales := 3;
+    VAR num alturaOrigen := nPiezasTotales * altura;
+    VAR num alturaDestino := altura;
+    VAR num alturaInter := altura;
+    
+    
+    PROC main()
+        TorresHanoi nPiezasTotales, pBaseOrigen, pBaseDestino, pBaseInterm, altura;
+    ENDPROC
+    
+    PROC TorresHanoi (num nPiezas, robtarget pOrig, robtarget pDest, robtarget pInt, num altoPieza)
+        
+        VAR robtarget pAproxOrigen;
+        VAR robtarget pAproxDestino;
+        VAR robtarget pAproxInter;
+        VAR robtarget pAux1;
+        VAR robtarget pAux2;
+        
+        !Definimos los puntos de aproximación
+        pAproxOrigen := Offs (pOrig, 0, 0, (nPiezasTotales + 1) * altura);
+        pAproxDestino := Offs (pDest, 0, 0, (nPiezasTotales + 1) * altura);
+        pAproxInter := Offs (pInt, 0, 0, (nPiezasTotales + 1) * altura);        
+        
+        IF nPiezas = 1 THEN
+            
+            !Movemos la pieza del origen al destino
+            pAux1 := Offs(pOrig, 0, 0, (nPiezasTotales * altura) - nPiezas);
+            MoveL pAproxOrigen, v2000, fine,Ventosa\WObj:=wobj0;
+            MoveLDO pAux1, v2000, fine,Ventosa\WObj:=wobj0, SD_ActivaVentosa, 1;
+            WaitDI ED_PiezaCogida, 1;
+            
+            altoPieza := altoPieza - altura; !Modificamos las alturas
+            
+            pAux1 := Offs(pDest, 0, 0, nPiezas * altura);
+            MoveL pAproxDestino, v2000, fine,Ventosa\WObj:=wobj0;
+            MoveLDO pAux1, v2000, fine,Ventosa\WObj:=wobj0, SD_ActivaVentosa, 0;
+            WaitDI ED_PiezaCogida, 0;
+            
+        ELSE
+            
+            !Hacemos Hanoi(n-1, origen, destino, auxiliar)
+            TorresHanoi nPiezas - 1, pOrig, pInt, pDest, (nPiezas + 1) * altura;
+            
+            !Movemos la pieza del origen al destino
+            pAux1 := Offs(pOrig, 0, 0, nPiezas * altura);
+            MoveL pAproxOrigen, v2000, fine,Ventosa\WObj:=wobj0;
+            MoveLDO pAux1, v2000, fine,Ventosa\WObj:=wobj0, SD_ActivaVentosa, 1;
+            WaitDI ED_PiezaCogida, 1;
+            
+            pAux1 := Offs(pDest, 0, 0, nPiezas * altura); !ALTURA INCORRECTA
+            MoveL pAproxDestino, v2000, fine,Ventosa\WObj:=wobj0;
+            MoveLDO pAux1, v2000, fine,Ventosa\WObj:=wobj0, SD_ActivaVentosa, 0;
+            WaitDI ED_PiezaCogida, 0;
+            
+            
+            !Hacemos Hanoi(n-1, auxiliar, origen, destino)
+            TorresHanoi nPiezas - 1, pInt, pDest, pOrig, (nPiezas + 1) * altura;
+            
+        ENDIF
+
+    ENDPROC
+		
+ENDMODULE

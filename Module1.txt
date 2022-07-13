@@ -1,0 +1,52 @@
+MODULE Module1
+        CONST robtarget pReposo:=[[689.268558126,0,680.330541406],[0.19080893,0,0.981627196,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pAprox:=[[50.000102701,0,50.026858914],[-0.000000223,0,1,0],[-1,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_10:=[[50,0,0],[0,0,1,0],[0,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_20:=[[130,0,0],[0,0,1,0],[-1,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_30:=[[210,0,0],[0,0,1,0],[-1,0,-1,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_50:=[[210,80,0],[0,0,1,0],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_40:=[[210,160,0],[0,0,1,0],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_60:=[[130,160,0],[0,0,1,0],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_70:=[[50,160,0],[0,0,1,0],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Target_80:=[[50,80,0],[0,0,1,0],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+!***********************************************************
+    !
+    ! Módulo:  Module1
+    !
+    ! Descripción:
+    !   <Introduzca la descripción aquí>
+    !
+    ! Autor: franc
+    !
+    ! Versión: 1.0
+    !
+    !***********************************************************
+    
+    
+    !***********************************************************
+    !
+    ! Procedimiento Main
+    !
+    !   Este es el punto de entrada de su programa
+    !
+    !***********************************************************
+    PROC main()
+        !Añada aquí su código
+        Path_10;
+    ENDPROC
+    PROC Path_10()
+        MoveJ pReposo,v100,z100,MyTool\WObj:=wobj0;
+        MoveL pAprox,v100,z100,MyTool\WObj:=Workobject_1;
+        MoveL Target_10,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_20,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_30,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_50,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_40,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_60,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_70,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_80,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL Target_10,v100,fine,MyTool\WObj:=Workobject_1;
+        MoveL pAprox,v100,z100,MyTool\WObj:=Workobject_1;
+        MoveJ pReposo,v100,fine,MyTool\WObj:=wobj0;
+    ENDPROC
+ENDMODULE

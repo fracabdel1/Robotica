@@ -1,0 +1,107 @@
+MODULE Module1
+    CONST robtarget pBaseOrigen:=[[1500,-500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pCentroDestino:=[[1700,1000,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pReposo:=[[1808.910161514,0,1855],[0.5,0,0.866025404,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+
+    !Constantes creadas por mi
+    CONST num altura := 50;
+    CONST num numeroDeTorresDestino := 3;
+    CONST num nPiezasEnElOrigen := 10;
+    
+    PROC main()
+        Ejercicio2 10, numeroDeTorresDestino, 200;
+    ENDPROC
+    
+    PROC Ejercicio2 (num nPiezasTorreOrigen, num nTorresDestino, num radioCircunferencia)
+        VAR robtarget tabPos{numeroDeTorresDestino};
+        VAR robtarget pAproxCirculo;
+        VAR robtarget pAproxOrigen;
+        VAR robtarget pBase;
+        VAR robtarget pAux;
+        VAR robtarget pApoyo;
+        VAR num gradosIncremt := 0;
+        VAR num grados := 0;
+        VAR num nPiezasEnTorre := 0;
+        VAR num alturaTorreDestino := 0;
+        VAR num alturaTorreOrigen := 0;
+        VAR num X := 0;
+        VAR num Y := 0;
+        VAR num hipotenusa;
+        
+        !Inicializamos
+        alturaTorreOrigen := altura * nPiezasTorreOrigen;
+        
+        !Vamos a crear un punto de aproximación encima del centro del circulo y 5 piezas por encima de la torre origen
+        pAproxCirculo := Offs (pCentroDestino, 0, 0, altura * nPiezasTorreOrigen);
+        pAproxOrigen := Offs (pBaseOrigen, 0, 0, (nPiezasTorreOrigen * altura) + (altura * 5));
+        
+        !Creamos el punto inicial de la torre origen
+        pBase := Offs (pBaseOrigen, 0, 0, altura * nPiezasTorreOrigen);
+        
+        !Como el círculo tiene 360 grados, podemos descomponen los grados en tantas partes como puntos tenemos
+        gradosIncremt := 360 / nTorresDestino;
+        alturaTorreDestino := altura;
+        hipotenusa := radioCircunferencia;
+        
+        !Vamos a buscar las posiciones de las torres destino
+        FOR i FROM 1 TO nTorresDestino DO
+                
+            !Calculamos las posiciones haciendo uso de senos y cosenos
+            X := Sin(grados) * hipotenusa;
+            Y := Cos(grados) * hipotenusa;
+            
+            !Creamos los puntos
+            pAux := Offs (pCentroDestino, X, Y, 0);
+            
+            !Lo añadimos en la tabla
+            tabPos{i} := pAux;
+            
+            !Actualizamos los grados
+            grados := grados + gradosIncremt;
+               
+        ENDFOR
+        
+        !En este segundo bucle for recorremos todos los puntos del array cogiendo y dejando las piezas
+        FOR A FROM 1 TO nPiezasTorreOrigen DO
+            FOR B FROM 1 TO nTorresDestino DO
+                
+                !Restriccion para que una vez se acaben las piezas no haga nada
+                IF alturaTorreOrigen <= 0 THEN
+                    Break;
+                ELSE
+                
+                !Movemos al punto de aproximación de la Torre Origen
+                MoveL pAproxOrigen, v2000, fine, Ventosa\WObj:=wobj0;
+                
+                !Cogemos la pieza de la Torre Origen
+                MoveLDO pBase, v2000, fine, Ventosa\WObj:=wobj0, SD_ActivaVentosa, 1;
+                WaitDI ED_PiezaCogida, 1;
+                MoveL pAproxOrigen, v2000, fine, Ventosa\WObj:=wobj0;
+                
+                !Movemos al punto de aproximacion del centro del círculo;
+                MoveL pAproxCirculo, v2000, fine, Ventosa\WObj:=wobj0;
+                
+                !Depositamos la pieza en su sitio
+                pApoyo := Offs (tabPos{B}, 0, 0, alturaTorreDestino);
+                MoveLDO pApoyo, v2000, fine, Ventosa\WObj:=wobj0, SD_ActivaVentosa, 0;
+                WaitDI ED_PiezaCogida, 0;
+                MoveL pAproxCirculo, v2000, fine, Ventosa\WObj:=wobj0;
+                
+                !Bajamos la altura de la torre Base
+                pBase := Offs (pBase, 0, 0, -altura);
+                
+                ENDIF
+                
+                !Decrementamos la altura en la torre origen para poder usar la restricción de altura
+                alturaTorreOrigen := alturaTorreOrigen - altura;
+                
+            ENDFOR
+            
+            !Cuando colocamos todas las torres con la misma altura la actualizamos
+            alturaTorreDestino := alturaTorreDestino + altura;
+    
+        ENDFOR
+        
+    ENDPROC
+
+ENDMODULE

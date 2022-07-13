@@ -1,0 +1,63 @@
+MODULE Module1
+        CONST robtarget pInicio:=[[600,150,600],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+!***********************************************************
+    !
+    ! Módulo:  Module1
+    !
+    ! Descripción:
+    !   <Introduzca la descripción aquí>
+    !
+    ! Autor: franc
+    !
+    ! Versión: 1.0
+    !
+    !***********************************************************
+    
+    
+    !***********************************************************
+    !
+    ! Procedimiento Main
+    !
+    !   Este es el punto de entrada de su programa
+    !
+    !***********************************************************
+    PROC main()
+        !Añada aquí su código
+        MoveL pInicio,v100,z0,MyTool\WObj:=wobj0;
+        Senoide pInicio, 300, 50;
+        MoveL pInicio,v100,z0,MyTool\WObj:=wobj0;
+          
+    ENDPROC
+    
+    PROC Senoide(robtarget pIni, num amplX, num amplY)
+        
+        CONST num nPuntos := 100+1;
+        VAR robtarget tabPos{nPuntos}; !Array de puntos
+        VAR num posX;
+        VAR num posY;
+        VAR num incr;
+        VAR robtarget pApoyo;
+        
+        !Añadimos el punto inicial
+        tabPos{1} := pIni; ! Punto inicial añadido a la tabla de puntos
+        
+        !Calculamos el incremento
+        incr := (amplX*2) / nPuntos; 
+        
+        !Creamos la tabla de puntos
+        FOR i FROM 2 TO nPuntos DO ! Empieza en 0 o 1 ( empezamos en 1 porque el 0 será la posición inicial)
+            !funcion seno
+            posX := ((i*incr) * 360) / (amplX * 2); !Angulo que le pasamos al seno
+            posY := amplY * Sin(posX); !Calculamos la altura de Y según su posicion en el eje X (calculado el angulo previamente posX)
+            
+            pApoyo := Offs (pIni, incr * (i - 2), posY, 0); !Hacemos el punto
+            tabPos{i} := pApoyo; !Guadamos el punto en la tabla
+        ENDFOR
+        
+        !Recorremos la tabla de puntos
+        FOR i FROM 1 TO nPuntos DO
+            MoveL tabPos{i},v100,z0,MyTool\WObj:=wobj0;
+        ENDFOR
+        
+    ENDPROC
+ENDMODULE

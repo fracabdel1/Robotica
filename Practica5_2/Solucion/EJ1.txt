@@ -1,0 +1,74 @@
+MODULE Module1
+	CONST robtarget pReposo:=[[1808.910161514,0,1855],[0.5,0,0.866025404,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+	CONST robtarget pBaseTorre1:=[[1500,500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pBaseTorre2:=[[1500,-500,750],[0,0,1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    
+    CONST num diametro := 100;
+    CONST num altura := 100;
+    
+		
+
+PROC main()
+    ! Movemos la primera torre de 7 piezas 2 veces el diametro de la pieza
+    MueveTorre pBaseTorre1, pBaseTorre2, 7, 4;
+    
+ENDPROC
+
+PROC MueveTorre(robtarget pOrigen,robtarget pDestino, num nPiezas, num desplazamiento) 
+   !Array donde vamos a guardar todos los puntos para usarlos en un bucle FOR
+   VAR robtarget tabPos{3}; !Punto inicial, intermedio, y final
+   VAR robtarget pIntermedio;
+   VAR robtarget pAproxMonton1;
+   VAR robtarget pAproxMonton2;
+   VAR robtarget pMonton1;
+   VAR robtarget pMonton2;
+   
+   !Creamos el punto intermedio con la altura unicial
+   pIntermedio := Offs (pOrigen, 0, diametro * desplazamiento * (-1), altura);
+   
+   !Añadimos los 3 puntos a la tabla
+   tabPos{1} := pOrigen;
+   tabPos{2} := pIntermedio;
+   tabPos{3} := pDestino;
+       
+   !Creamos el bucle FOR
+   FOR i FROM 1 TO 2 DO !Recorreremos el bucle primero con los puntos i e i+1 y despues con i+1 e i+2
+   
+   !Definimos los puntos iniciales de los dos montones
+   pMonton1 := Offs (tabPos{i}, 0, 0, altura * nPiezas);
+   pMonton2 := Offs (tabPos{i+1}, 0, 0, altura);
+   
+    !Creamos los 3 puntos de aproximación
+   pAproxMonton1 := Offs (tabPos{i}, 0, 0, (altura * nPiezas) + altura);
+   pAproxmonton2 := Offs (tabPos{i+1}, 0, 0, (altura * nPiezas) + altura);
+   
+    FOR nPiezas2 FROM 1 TO nPiezas DO !Bucle para el número de puezas
+    
+        !Movemos el brazo a la posición de aproximación del monton 1
+        MoveL pAproxMonton1, v2000, fine, Ventosa\WObj:=wobj0;
+        
+        !Cogemos la pieza del monton 1
+        MoveLDO pMonton1, v2000, fine, Ventosa\WObj:=wobj0, SD_ActivaVentosa, 1;
+        WaitDI ED_PiezaCogida, 1; !Esperamos a que PiezaCogida esté a 1
+        MoveL pAproxMonton1, v2000, fine, Ventosa\WObj:=wobj0;
+        
+        !Movemos el brazo a la posicion de aproximación del monton 2
+        MoveL pAproxmonton2, v2000, fine, Ventosa\WObj:=wobj0;
+        
+        !Ponemos la pueza en el montón 2
+        MoveLDO pMonton2, v2000, fine, Ventosa\WObj:=wobj0, SD_ActivaVentosa, 0;
+        WaitDI ED_PiezaCogida, 0; !Esperamos a que PiezaCogida esté a 1
+        MoveL pAproxmonton2, v2000, fine, Ventosa\WObj:=wobj0;
+        
+        !Calculamos los nuevos puntos de cada montón
+        pMonton1 := Offs (pMonton1, 0, 0, - altura);
+        pMonton2 := Offs (pMonton2, 0, 0, altura);
+    
+    ENDFOR
+   ENDFOR
+   
+    
+    
+ENDPROC
+
+ENDMODULE
